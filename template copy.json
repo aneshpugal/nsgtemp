@@ -36,7 +36,7 @@
             "location": "[variables('location')]",
             "tags": {},
             "dependsOn": [
-                "[concat('Microsoft.Web/serverfarms/',  variables('funcStorageName'))]"
+                "[concat('Microsoft.Web/serverfarms/',  variables('serverFarmName'))]"
             ],
             "properties": {
                 "name": "[variables('functionName')]",
