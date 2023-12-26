@@ -12,7 +12,10 @@
         },
         "logTypeConfig": {
             "defaultValue": "Enter Log Type Config String",
-            "type": "String"
+            "type": "string"
+        },
+        "hostingPlanName": {
+            "type": "string"
         }
     },
     "variables": {
