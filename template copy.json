@@ -11,7 +11,7 @@
             "type": "string"
         },
         "logTypeConfig": {
-            "defaultValue": "Enter Log Type Config String",
+            "defaultValue": "Enter LogTypeConfig String",
             "type": "string"
         }
     },
@@ -36,7 +36,7 @@
             "location": "[variables('location')]",
             "tags": {},
             "dependsOn": [
-                "[concat('Microsoft.Web/serverfarms/')]"
+                "[concat('Microsoft.Storage/storageAccounts/',  variables('funcStorageName'))]"
             ],
             "properties": {
                 "name": "[variables('functionName')]",
@@ -57,6 +57,10 @@
                         {
                             "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts',  variables('funcStorageName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+                        },
+                        {
+                            "name": "logTypeConfig", 
+                            "value" : "[parameters('logTypeConfig')]"
                         }
                     ],
                     "cors": {
