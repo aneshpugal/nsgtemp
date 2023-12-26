@@ -19,6 +19,7 @@
         "suffix": "[substring(toLower(uniqueString(resourceGroup().id, resourceGroup().location)),0,5)]",
 	    "subscriptionid": "[subscription().subscriptionId]",
         "location" :  "[resourceGroup().location]",
+        "linuxFxVersion" : "PYTHON|3.11",
         "funcStorageName": "[tolower(concat(substring(parameters('name'), 0, min(length(parameters('name')),16)), 'stg', variables('suffix')))]",
         "functionName" : "[concat(parameters('name'), '-Function-', variables('suffix'))]",
         "serverFarmName" : "[concat(parameters('name'), '-AppServicePlan-', variables('suffix'))]",
@@ -32,7 +33,7 @@
             "name": "[variables('functionName')]",
             "type": "Microsoft.Web/sites",
             "kind": "functionapp,linux",
-            "location": "[parameters('location')]",
+            "location": "[variables('location')]",
             "tags": {},
             "dependsOn": [
                 "[concat('Microsoft.Web/serverfarms/')]"
@@ -63,15 +64,13 @@
                             "https://portal.azure.com"
                         ]
                     },
-                    "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
-                    "ftpsState": "[parameters('ftpsState')]",
-                    "linuxFxVersion": "[parameters('linuxFxVersion')]"
+                    "linuxFxVersion": "[variables('linuxFxVersion')]"
                 },
                 "clientAffinityEnabled": false,
                 "virtualNetworkSubnetId": null,
                 "publicNetworkAccess": "Enabled",
                 "httpsOnly": true,
-                "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', variables('serverFarmName'))]"
+                "serverFarmId": "[concat('/subscriptions/', variables('subscriptionId'),'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', variables('serverFarmName'))]"
             },
             "resources": [
                 {
@@ -94,7 +93,7 @@
             "apiVersion": "2018-11-01",
             "name": "[variables('serverFarmName')]",
             "type": "Microsoft.Web/serverfarms",
-            "location": "[parameters('location')]",
+            "location": "[variables('location')]",
             "kind": "linux",
             "tags": {},
             "dependsOn": [],
