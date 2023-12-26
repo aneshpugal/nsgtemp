@@ -61,6 +61,14 @@
                         {
                             "name": "logTypeConfig", 
                             "value" : "[parameters('logTypeConfig')]"
+                        },
+                        {
+                            "name": "FUNCTION_APP_EDIT_MODE",
+                            "value": "readwrite"
+                        },
+                        {
+                            "name": "blobconnectionstring",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('funcStorageName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('BlobStorageAccountName')),'2019-06-01').keys[0].value,';EndpointSuffix=core.windows.net')]"
                         }
                     ],
                     "cors": {
