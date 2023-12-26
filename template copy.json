@@ -36,7 +36,7 @@
             "location": "[variables('location')]",
             "tags": {},
             "dependsOn": [
-                "[concat('Microsoft.Storage/storageAccounts/',  variables('funcStorageName'))]"
+                "[concat('Microsoft.Web/serverfarms/',  variables('funcStorageName'))]"
             ],
             "properties": {
                 "name": "[variables('functionName')]",
