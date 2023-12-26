@@ -20,9 +20,9 @@
 	    "subscriptionid": "[subscription().subscriptionId]",
         "location" :  "[resourceGroup().location]",
         "linuxFxVersion" : "PYTHON|3.11",
-        "funcStorageName": "[tolower(concat(substring(parameters('name'), 0, min(length(parameters('name')),16)), 'stg', variables('suffix')))]",
+        "funcStorageName": "[parameters('storageAccountName')]",
         "functionName" : "[concat(parameters('name'), '-Function-', variables('suffix'))]",
-        "serverFarmName" : "[concat(parameters('name'), '-AppServicePlan-', variables('suffix'))]",
+        "serverFarmName" : "[concat(parameters('storageAccountName'), '-AppServicePlan-', variables('suffix'))]",
         "RepoURL": "https://github.com/aneshpugal/nsgtemp.git",
         "Branch": "master",
         "RootManageSharedAccessKey_name": "RootManageSharedAccessKey"
