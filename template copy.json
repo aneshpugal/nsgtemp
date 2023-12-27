@@ -59,6 +59,10 @@
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts',  variables('funcStorageName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
                         },
                         {
+                            "name": "WEBSITE_CONTENTSHARE",
+                            "value": "[toLower(variables('functionName'))]"
+                        },
+                        {
                             "name": "logTypeConfig", 
                             "value" : "[parameters('logTypeConfig')]"
                         },
