@@ -1,5 +1,5 @@
 {
-    "scriptFile": "BlobForwarder/__init__.py",
+    "scriptFile": "__init__.py",
     "entryPoint": "main",
     "bindings": [
       {
@@ -7,7 +7,7 @@
         "name": "myBlob",
         "direction": "in",
         "path": "insights-logs-networksecuritygroupflowevent/resourceId=/SUBSCRIPTIONS/{subId}/RESOURCEGROUPS/{resourceGroup}/PROVIDERS/MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/{nsgName}/y={blobYear}/m={blobMonth}/d={blobDay}/h={blobHour}/m={blobMinute}/macAddress={mac}/PT1H.json",
-        "connection": "AzureWebJobsStorage"
+        "connection": "DefaultEndpointsProtocol=https;AccountName=flowlogapplogintegration;AccountKey=SLgFCqVpDyeRfEFDcp6ZVItjjGx9zNSnhgRgVfmQ7TfnPd05OhzZuT1o2Rh3xq/hz+4RH84B/5kS+AStWYI7Uw==;EndpointSuffix=core.windows.net"
       }
     ]
   }
