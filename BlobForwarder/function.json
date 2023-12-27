@@ -1,4 +1,6 @@
 {
+    "scriptFile": "BlobForwarder/__init__.py",
+    "entryPoint": "main",
     "bindings": [
       {
         "type": "blobTrigger",
