@@ -4,7 +4,7 @@ from azure.storage.blob import BlobServiceClient, ContainerClient
 import logging
 import re
 
-import BlobDetails,Checkpoint,nsg_Sender
+from BlobForwarder import BlobDetails,Checkpoint,nsg_Sender
 
 # app = func.FunctionApp()
 # container_name = ""

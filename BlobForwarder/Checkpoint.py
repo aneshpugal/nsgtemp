@@ -1,5 +1,5 @@
 import os
-import BlobDetails
+from BlobForwarder import BlobDetails
 from azure.data.tables import TableClient,TableServiceClient,UpdateMode
 from azure.core.exceptions import ResourceExistsError,HttpResponseError
 from typing_extensions import TypedDict

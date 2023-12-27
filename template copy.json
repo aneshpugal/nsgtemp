@@ -67,6 +67,10 @@
                             "value": "readwrite"
                         },
                         {
+                            "name": "Project",
+                            "value": "BlobForwarder"
+                        },
+                        {
                             "name": "blobconnectionstring",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts',  variables('funcStorageName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
                         }
@@ -76,7 +80,8 @@
                             "https://portal.azure.com"
                         ]
                     },
-                    "linuxFxVersion": "[variables('linuxFxVersion')]"
+                    "linuxFxVersion": "[variables('linuxFxVersion')]",
+                    "alwaysOn": true
                 },
                 "clientAffinityEnabled": false,
                 "virtualNetworkSubnetId": null,
@@ -95,7 +100,6 @@
                     "properties": {
                         "RepoUrl": "[variables('RepoUrl')]",
                         "branch": "[variables('branch')]",
-                        "publishRunbook": true,
                         "IsManualIntegration": true
                     }
                }

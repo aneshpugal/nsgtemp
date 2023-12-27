@@ -1,5 +1,4 @@
 import sys, os, re, gzip, json, urllib.parse, urllib.request, traceback, datetime, calendar, logging, hashlib, ast
-import azure.functions as func
 from base64 import b64decode
 
 logtype_config = None
