@@ -1,5 +1,6 @@
 {
     "scriptFile": "BlobForwarder/function_app.py",
+    "entryPoint": "blobtrigger",
     "bindings": [
       {
         "type": "blobTrigger",

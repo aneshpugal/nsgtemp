@@ -7,11 +7,10 @@ import re
 import BlobDetails,Checkpoint,nsg_Sender
 
 app = func.FunctionApp()
-container_name = ""
+# container_name = ""
 connection_string = os.environ["AzureWebJobsStorage"]
 
-@app.blob_trigger(arg_name="myblob", path="insights-logs-networksecuritygroupflowevent",
-                               connection="blobconnectionstring") 
+@app.blob_trigger(arg_name="myblob", path="insights-logs-networksecuritygroupflowevent",connection="blobconnectionstring") 
 def blobtrigger(myblob: func.InputStream):
     logging.info(f"Python blob trigger function processed blob"
                 f"Name: {myblob.name}"
