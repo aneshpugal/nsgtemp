@@ -1,5 +1,5 @@
 {
-    "scriptFile": "__init__.py",
+    "scriptFile": "BlobForwarder/__init__.py",
     "entryPoint": "main",
     "bindings": [
       {
