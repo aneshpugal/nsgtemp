@@ -13,6 +13,9 @@
         "logTypeConfig": {
             "defaultValue": "eyJsb2dUeXBlIjoibnNnbG9ncyIsImFwaUtleSI6InVzX2E1MTE4NGU2ZWFkMjI2YzgwNmRmYTMzMzNjNWNlMWFkIiwiZGF0ZUZvcm1hdCI6IiVZLSVtLSVkVCVIOiVNOiVTLiVmWiIsImRhdGVSZWdleCI6IjIwWzAtOV17Mn1cXC1bMC05XXsxLDJ9XFwtKFxcc1sxLTldfFxcZHsxLDJ9KVRbMC05XXsxLDJ9XFw6WzAtOV17MSwyfVxcOlswLTldezEsMn1cXC5bMC05XXsxLDl9WiIsInVwbG9hZERvbWFpbiI6ImxvZ2Muc2l0ZTI0eDcuY29tIiwidGltZXpvbmUiOiIrMDAwMCIsImRhdGVGaWVsZCI6InRpbWUiLCJqc29uUGF0aCI6W3sibmFtZSI6InRpbWUifSx7Im5hbWUiOiJzeXN0ZW1JZCJ9LHsibmFtZSI6Im1hY0FkZHJlc3MifSx7Im5hbWUiOiJuc2dDYXRlZ29yeSIsImtleSI6ImNhdGVnb3J5In0seyJuYW1lIjoicmVzb3VyY2VJZCJ9LHsibmFtZSI6Im9wZXJhdGlvbk5hbWUifSx7Im5hbWUiOiJwcm9wZXJ0aWVzIiwidHlwZSI6Impzb24tb2JqZWN0In1dLCJmaWx0ZXJDb25maWciOnt9fQ==",
             "type": "string"
+        },
+        "blobconnectionstring" :{
+            "type": "string"
         }
     },
     "variables": {
@@ -72,7 +75,7 @@
                         },
                         {
                             "name": "blobconnectionstring",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts',  variables('funcStorageName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+                            "value": "[parameters('blobconnectionstring')]"
                         }
                     ],
                     "cors": {
