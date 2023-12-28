@@ -42,8 +42,8 @@ def main(myblob: func.InputStream):
     if blob_content and blob_content[0] == 0x2C:
         blob_content = blob_content[1:]
 
-    with open("/home/anesh-zt668/Documents/NSG_PYTHON_VS/output.json", 'wb') as file:
-        file.write(blob_content)
+    # with open("/home/anesh-zt668/Documents/NSG_PYTHON_VS/output.json", 'wb') as file:
+    #     file.write(blob_content)
     nsg_Sender.processData(blob_content)
     checkpoint['CheckpointIndex'] = (len(block_list[0])-1)
     checkpointDB.put_checkpoint(checkpoint)
