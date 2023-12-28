@@ -6,7 +6,7 @@ import re
 
 from BlobForwarder import BlobDetails,Checkpoint,nsg_Sender
 
-# app = func.FunctionApp(
+# app = func.FunctionApp()
 # container_name = ""
 connection_string = os.environ["AzureWebJobsStorage"]
 
