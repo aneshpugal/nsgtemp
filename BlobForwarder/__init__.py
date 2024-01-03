@@ -4,7 +4,7 @@ from azure.storage.blob import BlobServiceClient, ContainerClient
 import logging
 import re
 
-from BlobForwarder import BlobDetails,Checkpoint,nsg_Sender
+from BlobForwarder import BlobDetails,Checkpoint,blob_Sender
 
 # app = func.FunctionApp()
 # container_name = ""
@@ -17,6 +17,8 @@ def main(myblob: func.InputStream):
                 f"Blob Size: {myblob.length} bytes")
     
     blobDetails = BlobDetails.BlobDetails(str(myblob.name))
+    serviceName = blobDetails.serviceName
+    
     checkpointDB = Checkpoint.Checkpoint(connection_string)
     checkpoint = checkpointDB.get_checkpoint(blobDetails)
 
@@ -30,23 +32,11 @@ def main(myblob: func.InputStream):
     data_length = ending_byte - starting_byte
 
     logging.info(f"Blob: {blobDetails}, starting byte: {starting_byte}, ending byte: {ending_byte}, number of bytes: {data_length}")
-    
-    attributes = {
-        'BlobPath': f"{myblob.name}",
-        'connection': connection_string
-    }
-
     blob_data=blob_client.download_blob(offset=(starting_byte),length=data_length)
     blob_content = blob_data.readall()
     
     if blob_content and blob_content[0] == 0x2C:
         blob_content = blob_content[1:]
-
-    # with open("/home/anesh-zt668/Documents/NSG_PYTHON_VS/output.json", 'wb') as file:
-    #     file.write(blob_content)
-    nsg_Sender.processData(blob_content)
+    blob_Sender.processData(blob_content,serviceName)
     checkpoint['CheckpointIndex'] = (len(block_list[0])-1)
     checkpointDB.put_checkpoint(checkpoint)
-    # nsg_source_data_account = os.environ["nsgSourceDataAccount"]
-    # blob_container_name = os.environ["blobContainerName"]
-    # blob_details = BlobDetails(myblob.name)

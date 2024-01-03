@@ -14,7 +14,7 @@ class BlobDetails:
             self.hour = match.group("blobHour")
             self.minute = match.group("blobMinute")
             self.mac = match.group("mac")
-
+        self.serviceName =  "NETWORKSECURITYGROUPS"
     def get_partition_key(self):
         return f"{self.subscription_id.replace('-', '_')}_{self.resource_group}_{self.nsg_name}_{self.mac}"
 
