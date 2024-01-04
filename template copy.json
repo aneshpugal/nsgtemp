@@ -25,8 +25,7 @@
         "serverFarmName" : "[concat(parameters('storageAccountName'), '-AppServicePlan-', variables('suffix'))]",
         "RepoURL": "https://github.com/aneshpugal/nsgtemp.git",
         "Branch": "master",
-        "RootManageSharedAccessKey_name": "RootManageSharedAccessKey",
-        "blobconnectionstring" : "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts',  variables('funcStorageName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+        "RootManageSharedAccessKey_name": "RootManageSharedAccessKey"
     },
     "resources": [
         {
@@ -73,7 +72,7 @@
                         },
                         {
                             "name": "blobconnectionstring",
-                            "value": "[variables('blobconnectionstring')]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts',  variables('funcStorageName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
                         }
                     ],
                     "cors": {
