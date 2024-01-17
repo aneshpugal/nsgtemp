@@ -13,7 +13,8 @@
             }
         },
         "logTypeConfig": {
-                "type": "string",
+            "type": "string",
+            "defaultValue": "eyJsb2dUeXBlIjoiYXp1cmVuc2dsb2dzIiwiYXBpS2V5IjoidXNfYTUxMTg0ZTZlYWQyMjZjODA2ZGZhMzMzM2M1Y2UxYWQiLCJkYXRlRm9ybWF0IjoiJVktJW0tJWQgJUg6JU06JVMiLCJkYXRlUmVnZXgiOiIyMFswLTldezJ9XFwtWzAtOV17MSwyfVxcLShcXHNbMS05XXxcXGR7MSwyfSlcXHNbMC05XXsxLDJ9XFw6WzAtOV17MSwyfVxcOlswLTldezEsMn0iLCJ1cGxvYWREb21haW4iOiJsb2djLnNpdGUyNHg3LmNvbSIsInRpbWV6b25lIjoiKzAwMDAiLCJkYXRlRmllbGQiOiJUaW1lIiwianNvblBhdGgiOlt7Im5hbWUiOiJUaW1lIn0seyJuYW1lIjoiU3lzdGVtSWQifSx7Im5hbWUiOiJNYWNBZGRyZXNzIn0seyJuYW1lIjoiUmVzb3VyY2VDYXRlZ29yeSJ9LHsibmFtZSI6IlJlc291cmNlSWQifSx7Im5hbWUiOiJPcGVyYXRpb25OYW1lIn0seyJuYW1lIjoiVmVyc2lvbiJ9LHsibmFtZSI6IlJ1bGUifSx7Im5hbWUiOiJTb3VyY2VJUCJ9LHsibmFtZSI6IkRlc3RpbmF0aW9uSVAifSx7Im5hbWUiOiJTb3VyY2VQb3J0In0seyJuYW1lIjoiRGVzdGluYXRpb25Qb3J0In0seyJuYW1lIjoiUHJvdG9jb2wifSx7Im5hbWUiOiJUcmFmZmljRGVzdGluYXRpb24ifSx7Im5hbWUiOiJUcmFmZmljQWN0aW9uIn0seyJuYW1lIjoiUHJpb3JpdHkifSx7Im5hbWUiOiJCeXRlc1NlbnQifSx7Im5hbWUiOiJCeXRlc1JlY2VpdmVkIn0seyJuYW1lIjoiUGFja2V0c1NlbnQifSx7Im5hbWUiOiJQYWNrZXRzUmVjZWl2ZWQifV0sImZpbHRlckNvbmZpZyI6e319",
             "metadata": {
                 "description" : "Enter the logTypeConfig value copied from Site24x7 Log profile page"
             }
@@ -68,7 +69,8 @@
             "name": "[ variables('funcStorageName')]",
             "location": "[variables('location')]",
             "sku": {
-                "name": "Standard_LRS"
+                "name": "Standard_LRS",
+                "tier": "Standard"
             },
             "properties": {
                 "supportsHttpsTrafficOnly": false,
@@ -92,11 +94,11 @@
             "kind": "functionapp,linux",
             "location": "[variables('location')]",
             "tags": {},
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/',  variables('funcStorageName'))]"
-            ],
             "properties": {
-                "name": "[variables('functionName')]",
+                "enabled": true,
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverFarmName'))]",
+                "reserved": false,
+                "httpsOnly": true,
                 "siteConfig": {
                     "appSettings": [
                         {
@@ -112,25 +114,31 @@
                             "value" : "[parameters('logTypeConfig')]"
                         },
                         {
+                            "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName')),'2019-06-01').keys[0].value)]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTSHARE",
+                            "value": "[toLower(variables('functionName'))]"
+                        },                         
+                        {
+                            "name": "FUNCTION_APP_EDIT_MODE",
+                            "value": "readwrite"
+                        },
+                        {
                             "name": "AzureWebJobsStorage",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts',  variables('funcStorageName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName')),'2019-06-01').keys[0].value)]"
                         },
                         {
                             "name": "blobconnectionstring",
                             "value": "[parameters('blobconnectionstring')]"
                         }
-                    ],
-                    "linuxFxVersion": "[variables('linuxFxVersion')]",
-                    "alwaysOn": false
-                },
-                "serverFarmId": "[concat('/subscriptions/', variables('subscriptionId'),'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', variables('serverFarmName'))]",
-                "clientAffinityEnabled": false,
-                "publicNetworkAccess": "Enabled",
-                "httpsOnly": true
+                    ]
+                }
             },
             "resources": [
                 {
-                    "apiVersion": "2018-11-01",
+                    "apiVersion": "2020-06-01",
                     "name": "web",
                     "type": "sourcecontrols",
                     "dependsOn": [
@@ -140,9 +148,13 @@
                         "RepoUrl": "[variables('RepoURL')]",
                         "branch": "[variables('Branch')]",
                         "publishRunbook": true,
-                        "IsManualIntegration": false
+                        "IsManualIntegration": true
                     }
                }
+            ],
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('serverFarmName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts/',  variables('funcStorageName'))]"                
             ]
         }
 	]
