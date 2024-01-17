@@ -93,7 +93,7 @@
             "location": "[variables('location')]",
             "tags": {},
             "dependsOn": [
-                "[concat('Microsoft.Storage/storageAccounts/',  variables('funcStorageName'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/',  variables('funcStorageName'))]"
             ],
             "properties": {
                 "name": "[variables('functionName')]",
@@ -138,7 +138,7 @@
                     ],
                     "properties": {
                         "RepoUrl": "[variables('RepoURL')]",
-                        "branch": "[variables('master')]",
+                        "branch": "[variables('Branch')]",
                         "publishRunbook": true,
                         "IsManualIntegration": true
                     }
