@@ -118,7 +118,7 @@
                         },
                         {
                             "name": "blobconnectionstring",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('NSGstorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts',  parameters'NSGstorageAccountName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('NSGstorageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('NSGstorageAccountName')),'2019-06-01').keys[0].value,';EndpointSuffix=core.windows.net')]"
                         }
                     ],
                     "linuxFxVersion": "[variables('linuxFxVersion')]",
