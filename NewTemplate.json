@@ -69,8 +69,7 @@
             "name": "[ variables('funcStorageName')]",
             "location": "[variables('location')]",
             "sku": {
-                "name": "Standard_LRS",
-                "tier": "Standard"
+                "name": "Standard_LRS"
             },
             "properties": {
                 "supportsHttpsTrafficOnly": false,
@@ -94,7 +93,12 @@
             "kind": "functionapp,linux",
             "location": "[variables('location')]",
             "tags": {},
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('serverFarmName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts/',  variables('funcStorageName'))]"                
+            ],
             "properties": {
+                "name": "[variables('functionName')]",
                 "enabled": true,
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverFarmName'))]",
                 "reserved": false,
@@ -127,13 +131,15 @@
                         },
                         {
                             "name": "AzureWebJobsStorage",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName')),'2019-06-01').keys[0].value)]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts',  variables('funcStorageName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
                         },
                         {
                             "name": "blobconnectionstring",
                             "value": "[parameters('blobconnectionstring')]"
                         }
-                    ]
+                    ],
+                    "linuxFxVersion": "[variables('linuxFxVersion')]",
+                    "alwaysOn": true
                 }
             },
             "resources": [
@@ -151,10 +157,6 @@
                         "IsManualIntegration": true
                     }
                }
-            ],
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', variables('serverFarmName'))]",
-                "[resourceId('Microsoft.Storage/storageAccounts/',  variables('funcStorageName'))]"                
             ]
         }
 	]
