@@ -6,11 +6,10 @@
             "defaultValue": "Site24x7AzureNSGLogs",
             "type": "string"
         },
-        "NSGstorageAccountName": {
-            "defaultValue" : "flowlogapplogintegration",
+        "blobconnectionstring": {
             "type": "string",
             "metadata": {
-                "description" : "Enter the name of the storage account from which NSG logs has to be collected."
+                "description" : "Enter the connection string from which you wish to collect logs from."
             }
         },
         "logTypeConfig": {
@@ -118,7 +117,7 @@
                         },
                         {
                             "name": "blobconnectionstring",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('NSGstorageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('NSGstorageAccountName')),'2019-06-01').keys[0].value,';EndpointSuffix=core.windows.net')]"
+                            "value": "[parameters('blobconnectionstring')]"
                         }
                     ],
                     "linuxFxVersion": "[variables('linuxFxVersion')]",
