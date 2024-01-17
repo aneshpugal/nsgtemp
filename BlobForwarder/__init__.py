@@ -30,7 +30,7 @@ except Exception as e:
 
 # timestamp = datetime.fromisoformat(timestamp_str)
 
-def main(myblob: func.InputStream,context: func.Context):
+def main(myblob: func.InputStream):
     try:
         logging.info(f"Python blob trigger function processed blob Name: {myblob.name}")
         current_time_str = myblob.blob_properties["LastModified"]
@@ -39,8 +39,8 @@ def main(myblob: func.InputStream,context: func.Context):
             return
         azure_logger = logging.getLogger("azure.core.pipeline.policies.http_logging_policy")
         azure_logger.setLevel(logging.WARNING)
-        trigger_id = context.invocation_id
-        logger = configure_logging(trigger_id)
+        # trigger_id = context.invocation_id
+        logger = configure_logging("123")
         blobDetails = BlobDetails.BlobDetails(str(myblob.name))
         serviceName = blobDetails.serviceName
         
