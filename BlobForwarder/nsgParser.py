@@ -17,6 +17,8 @@ field_mapping = {
     }
     
 def processData(dataList,log_line_filter):
+    parsed_lines = []
+    log_size = 0
     metadata = {
         "SystemId": dataList["systemId"],
         "MacAddress": dataList["macAddress"],
@@ -38,4 +40,7 @@ def processData(dataList,log_line_filter):
                 formatted_line["Protocol"] = "TCP" if formatted_line["Protocol"] == "T" else "UDP"
                 formatted_line["TrafficAction"] = "Accept" if formatted_line["TrafficAction"] == "A" else "Denied"
                 formatted_line.update(metadata)
-                log_line_filter(formatted_line)
+                parsed_line,_ = log_line_filter(formatted_line)
+                parsed_lines.append(parsed_line)
+                log_size+= _
+    return parsed_lines,log_size

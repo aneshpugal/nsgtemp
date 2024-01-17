@@ -1,12 +1,10 @@
 import sys, os, re, gzip, json, urllib.parse, urllib.request, traceback, datetime, calendar, logging, hashlib, ast
 from base64 import b64decode
 from BlobForwarder import nsgParser
-
+from BlobForwarder.logger import logger
 logtype_config = None
 s247_datetime_format_string = None
-log_size=0
 serviceName = ""
-parsed_lines = []
 
 
 def get_json_value(obj, key, datatype=None):
@@ -38,22 +36,26 @@ def get_json_value(obj, key, datatype=None):
 
 
 def json_log_parser(lines_read):
-    global serviceName 
+    parsed_lines = []
+    log_size=0
     for event_obj in lines_read:
         try:
             formatted_line = {}
             if serviceName == "NETWORKSECURITYGROUPS":
-                nsgParser.processData(event_obj,log_line_filter)
+                lines,size= nsgParser.processData(event_obj,log_line_filter)
             else:
                 for path_obj in logtype_config['jsonPath']:
                     value = get_json_value(event_obj, path_obj['key' if 'key' in path_obj else 'name'], path_obj['type'] if 'type' in path_obj else None)
                     if value:
                         formatted_line[path_obj['name']] = value
+                    lines,size=log_line_filter(formatted_line)
+            parsed_lines.extend(lines)
+            log_size += size
         except Exception as e:
             print('unable to parse event message : ',event_obj)
             traceback.print_exc()
             pass
-    return parsed_lines
+    return parsed_lines,log_size
 
 def get_timestamp(datetime_string):
     try:
@@ -143,14 +145,13 @@ def remove_ignored_fields(formatted_line):
         formatted_line.pop(field_name, '')
 
 def log_size_calculation(formatted_line):
-    global log_size
+    log_size=0
     data_exclusion = ("_zl","s247","inode")
     for field in formatted_line:
         if not field.startswith(data_exclusion):
             log_size += sys.getsizeof(str(formatted_line[field])) -49
 
 def log_line_filter(formatted_line):
-    global serviceName,parsed_lines
     if masking_config:
         apply_masking(formatted_line)
     if hashing_config:
@@ -164,8 +165,8 @@ def log_line_filter(formatted_line):
     formatted_line['_zl_timestamp'] = get_timestamp(formatted_line[logtype_config['dateField']])
     formatted_line['s247agentuid'] = serviceName
     log_size_calculation(formatted_line)
-    parsed_lines.append(formatted_line)
-
+    log_size = log_size_calculation(formatted_line)
+    return formatted_line,log_size
 
 def send_logs_to_s247(gzipped_parsed_lines, log_size):
     header_obj = {'X-DeviceKey': logtype_config['apiKey'], 'X-LogType': logtype_config['logType'],
@@ -176,9 +177,9 @@ def send_logs_to_s247(gzipped_parsed_lines, log_size):
     s247_response = urllib.request.urlopen(request, data=gzipped_parsed_lines)
     dict_responseHeaders = dict(s247_response.getheaders())
     if s247_response and s247_response.status == 200:
-        logging.info('%s :All logs are uploaded to site24x7', dict_responseHeaders['x-uploadid'])
+        logger.info('%s :All logs are uploaded to site24x7', dict_responseHeaders['x-uploadid'])
     else:
-        logging.info('%s :Problem in uploading to site24x7 status %s, Reason : %s', dict_responseHeaders['x-uploadid'], s247_response.status, s247_response.read())
+        logger.info('%s :Problem in uploading to site24x7 status %s, Reason : %s', dict_responseHeaders['x-uploadid'], s247_response.status, s247_response.read())
 
 def processData(logRecords,service):
     try:
@@ -218,7 +219,7 @@ def processData(logRecords,service):
                 logtype_config['filterConfig'][field]['values'] = '|'.join(x.pattern for x in temp)
                 
         if 'jsonPath' in logtype_config:
-            parsed_lines = json_log_parser(logRecords)
+            parsed_lines,log_size = json_log_parser(logRecords)
 
         if parsed_lines:
             gzipped_parsed_lines = gzip.compress(json.dumps(parsed_lines).encode())
