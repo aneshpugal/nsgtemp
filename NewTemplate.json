@@ -140,7 +140,7 @@
                         "RepoUrl": "[variables('RepoURL')]",
                         "branch": "[variables('Branch')]",
                         "publishRunbook": true,
-                        "IsManualIntegration": true
+                        "IsManualIntegration": false
                     }
                }
             ]
